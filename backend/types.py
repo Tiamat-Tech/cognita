@@ -115,6 +115,7 @@ class ModelType(str, Enum):
     chat = "chat"
     embedding = "embedding"
     reranking = "reranking"
+    audio = "audio"
 
 
 class ModelConfig(ConfiguredBaseModel):
@@ -134,6 +135,7 @@ class ModelProviderConfig(ConfiguredBaseModel):
     llm_model_ids: List[str] = Field(default_factory=list)
     embedding_model_ids: List[str] = Field(default_factory=list)
     reranking_model_ids: List[str] = Field(default_factory=list)
+    audio_model_ids: List[str] = Field(default_factory=list)
 
 
 class EmbedderConfig(ConfiguredBaseModel):
@@ -157,7 +159,7 @@ class ParserConfig(ConfiguredBaseModel):
     Parser configuration
     """
 
-    name: str
+    name: str  # File extension
     parameters: Dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="before")
@@ -313,7 +315,7 @@ class BaseDataSource(ConfiguredBaseModel):
         title="A unique identifier for the data source",
     )
     metadata: Optional[Dict[str, Any]] = Field(
-        None, title="Additional config for your data source"
+        default_factory=dict, title="Additional config for your data source"
     )
 
     @computed_field
@@ -501,6 +503,11 @@ class ListDataIngestionRunsDto(ConfiguredBaseModel):
     data_source_fqn: Optional[str] = Field(
         title="Fully qualified name of the data source", default=None
     )
+
+
+################################
+## RAG Application
+################################
 
 
 class RagApplication(ConfiguredBaseModel):
